@@ -1,0 +1,45 @@
+---
+// Phase 2.6: this fetch() runs at ASTRO BUILD TIME (not runtime), proving the Workers Build container has
+// real outbound HTTPS access DURING the build step itself - not just during npm install.
+//
+// Deliberately NOT github.com/raw.githubusercontent.com: the source repository must not also be the thing
+// under test. jsonplaceholder.typicode.com is a well-known, unauthenticated, purpose-built fake-REST-API
+// test service - no secrets, no personal data, and its fixed test records don't change.
+const FIXTURE_URL = "https://jsonplaceholder.typicode.com/todos/1";
+// Known, stable, deterministic response from that exact endpoint (documented/well-known fixture data):
+// { "userId": 1, "id": 1, "title": "delectus aut autem", "completed": false }
+const EXPECTED_TITLE = "delectus aut autem";
+
+let marker = "FETCH_FAILED";
+let fetchOk = false;
+let fetchStatus = 0;
+let matchedExpected = false;
+try {
+  const res = await fetch(FIXTURE_URL);
+  fetchStatus = res.status;
+  if (res.ok) {
+    const data = await res.json();
+    marker = data.title;
+    fetchOk = true;
+    matchedExpected = data.title === EXPECTED_TITLE && data.id === 1 && data.userId === 1;
+  }
+} catch (e) {
+  marker = `FETCH_ERROR: ${String(e)}`;
+}
+
+const result = {
+  status: "PHASE26_WORKERS_BUILD_TEST",
+  buildTimeHttpsFetchSucceeded: fetchOk,
+  fetchHttpStatus: fetchStatus,
+  buildTimeFetchedMarker: marker,
+  matchedExpectedFixture: matchedExpected,
+  builtAt: new Date().toISOString(),
+};
+---
+<!doctype html>
+<html>
+  <head><meta charset="utf-8" /><title>Phase 2.6 disposable test</title></head>
+  <body>
+    <pre id="result">{JSON.stringify(result, null, 2)}</pre>
+  </body>
+</html>

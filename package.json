@@ -1,0 +1,11 @@
+{
+  "name": "choiceclinic-phase26-disposable-test",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "astro build"
+  },
+  "dependencies": {
+    "astro": "^7.3.3"
+  }
+}

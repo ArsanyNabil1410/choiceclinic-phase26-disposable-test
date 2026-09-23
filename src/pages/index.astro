@@ -1,5 +1,4 @@
 ---
-this is not valid javascript syntax {{{
 // Phase 2.6: this fetch() runs at ASTRO BUILD TIME (not runtime), proving the Workers Build container has
 // real outbound HTTPS access DURING the build step itself - not just during npm install.
 //
@@ -30,6 +29,7 @@ try {
 
 const result = {
   status: "PHASE26_WORKERS_BUILD_TEST",
+  phase26lMarker: "PHASE26L_SUCCESS",
   buildTimeHttpsFetchSucceeded: fetchOk,
   fetchHttpStatus: fetchStatus,
   buildTimeFetchedMarker: marker,
